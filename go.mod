@@ -1,3 +1,3 @@
-module github.com/SubhashBose/gomodule-selfupdater
+module github.com/SubhashBose/GoModule-selfupdater
 
 go 1.21
