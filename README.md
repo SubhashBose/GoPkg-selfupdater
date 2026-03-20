@@ -1,6 +1,6 @@
 # Go Binary self-updating module.
 
-This module automates the checking of the latest version from the GitHub release page. If a newer version is found, it will download the appropriate binary for the OS and architecture, and will self-update the executing binary.
+This Golang pakage automates the checking of the latest version from the GitHub release page. If a newer version is found, it will download the appropriate binary for the OS and architecture, and will self-update the executing binary.
 
 To configure the required parameters
 ```go
