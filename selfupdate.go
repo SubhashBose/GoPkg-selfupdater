@@ -241,11 +241,14 @@ func downloadTo(client *http.Client, url string, dst io.Writer) error {
 // isNewer returns true if latest > current using simple dotted-integer
 // comparison (e.g. "1.2.0" > "1.1.9"). Falls back to string inequality so
 // non-semver tags still trigger an update rather than silently skipping.
+// isNewer returns true if latest > current.
+// Handles 1, 1.2, and 1.2.3 style versions.
 func isNewer(latest, current string) bool {
 	lp := parseSemver(latest)
 	cp := parseSemver(current)
 	if lp == nil || cp == nil {
-		return latest != current
+		// couldn't parse — don't update to avoid false positives
+		return false
 	}
 	for i := range lp {
 		if lp[i] > cp[i] {
@@ -258,10 +261,15 @@ func isNewer(latest, current string) bool {
 	return false
 }
 
+// parseSemver parses "1", "1.2", or "1.2.3" into a 3-element slice.
 func parseSemver(v string) []int {
 	parts := strings.Split(v, ".")
-	if len(parts) != 3 {
+	if len(parts) > 3 {
 		return nil
+	}
+	// Pad to always have 3 parts: "1.1" → [1, 1, 0]
+	for len(parts) < 3 {
+		parts = append(parts, "0")
 	}
 	nums := make([]int, 3)
 	for i, p := range parts {
